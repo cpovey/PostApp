@@ -1,6 +1,7 @@
 PostApp::Application.routes.draw do
   namespace :api, defaults: { format: :json } do
-    get '/posts/list', to: 'posts#list'
+    resources :posts, :only => [:create, :show, :update, :destroy]
+    get     '/posts/list',  to: 'posts#list'
   end
 
   # resources :posts
