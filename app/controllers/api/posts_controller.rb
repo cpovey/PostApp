@@ -1,10 +1,8 @@
 class Api::PostsController < ApplicationController
   respond_to :json
 
-  def list
-    render json: Post.order(updated_at: :desc).map { |p| 
-      {id: p.id, title: p.title, author_name: p.user.name, author_city: p.user.city, images: p.images.to_a.map{ |i| i.url }}
-    }
+  def index
+    render json: Post.order(updated_at: :desc)
   end
 
   def create
@@ -38,8 +36,8 @@ class Api::PostsController < ApplicationController
 
   def destroy
     begin
-      post = Post.find(params[:id])
-      post.destroy
+      condemned = Post.find(params[:id])
+      condemned.destroy
       head :no_content
     rescue ActiveRecord::RecordNotFound => e
       render json: { errors: { id: [e.message] } }, status: :unprocessable_entity

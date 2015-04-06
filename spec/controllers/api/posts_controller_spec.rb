@@ -1,20 +1,24 @@
 require 'rails_helper'
 
 RSpec.describe Api::PostsController, type: :controller do
-  describe "GET #list" do
+  describe "GET #index" do
     before(:each) do
-      FactoryGirl.create :post, updated_at: 1.week.ago
-      FactoryGirl.create :another_post, updated_at: 1.day.ago
-      get :list, format: :json
+      FactoryGirl.create(:post, updated_at: 1.week.ago)
+      FactoryGirl.create(:another_post, updated_at: 1.day.ago)
+      get :index, format: :json
+      @posts = JSON.parse(response.body, symbolize_names: true)[:posts]
     end
 
     it "returns correct number of posts" do
-      expect(JSON.parse(response.body).count).to eql 2
+      expect(@posts.count).to eql 2
     end
 
-    it "returns posts in correct order" do
-      posts = JSON.parse(response.body)
-      expect(Post.find(posts.first['id']).updated_at).to be > Post.find(posts.last['id']).updated_at
+    it "returns posts in descending order (newest first)" do
+      expect(@posts.first[:updated_at]).to be > @posts.last[:updated_at]
+    end
+
+    it "returns correct post data" do
+      expect(@posts.first.keys).to match_array([:id, :title, :author_name, :author_city, :images, :updated_at])
     end
 
     it "returns success status" do
@@ -52,7 +56,7 @@ RSpec.describe Api::PostsController, type: :controller do
     it "returns single post data" do
       p = FactoryGirl.create :post
       get :show, id: p.id, format: :json
-      show_response = JSON.parse(response.body, symbolize_names: true)
+      show_response = JSON.parse(response.body, symbolize_names: true)[:post]
       expect(show_response).to_not be_nil
       expect(show_response).to have_key(:id)
       expect(show_response[:id]).to eql Post.first.id

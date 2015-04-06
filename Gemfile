@@ -29,6 +29,8 @@ gem 'jbuilder', '~> 1.2'
 
 gem 'responders'
 
+gem 'active_model_serializers'
+
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false

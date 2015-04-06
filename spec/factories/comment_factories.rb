@@ -5,8 +5,8 @@ FactoryGirl.define do
               "Sed efficitur augue nibh, a bibendum arcu tempus sed. Nullam.", 
               "Nulla tempor est ex, vitae tempus justo facilisis tincidunt. Mauris.", 
               "Interdum et malesuada fames ac ante ipsum primis in faucibus."].sample}
-    post
-    user { [:craig, :will, :kumi].sample }
-    comments build_list(:comment)
+    post { FactoryGirl.create(:post) }
+    user { FactoryGirl.create([:craig, :will, :kumi].sample) }
+    # comments build_list(:comment)
   end
 end
