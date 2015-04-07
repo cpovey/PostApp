@@ -24,10 +24,13 @@ Finally, to run a specific test within a specific spec file, use `rspec spec/con
 The following resources/endpoints are implemented as part of the API:  
 
 ###Posts###
-1. List all posts that are no more than one month old
-       GET '/api/posts'
-Example response: 
-```{
+1. List all posts that are no more than one month old  
+
+       `GET '/api/posts'`
+
+       Example response: 
+       ```
+{
     "posts": [{
         "id": 2,
         "title": "Will's First Post",
@@ -47,19 +50,25 @@ Example response:
         }],
         "updated_at": "2015-04-06T02:58:04.768Z"
     }]
-}```
-2. Create a new post
-       POST '/api/posts'
-Example ```POST``` params/data:
+}
 ```
+2. Create a new post
+
+       `POST '/api/posts'`
+
+       Example `POST` params/data:
+       ```
 {
     "post" => {
         "title" => "Really Cool Post", "content" => "This is my first post, I hope you all like it!", "user" => {"id" => 1}
-}```
-3. View an individual post
-       GET '/api/posts/:id'
-Example response:
+}
 ```
+3. View an individual post
+
+       `GET '/api/posts/:id'`
+
+       Example response:
+       ```
 {
     "post": {
         "id": 1,
@@ -71,39 +80,51 @@ Example response:
         }],
         "updated_at": "2015-04-06T02:58:04.768Z"
     }
-}```
-4. Update a post
-       PUT '/api/posts/:id'
-Example ```PUT``` params/data: 
+}
 ```
+4. Update a post
+
+       `PUT '/api/posts/:id'`
+
+       Example `PUT` params/data: 
+       ```
 {
     "post" => {
         "title" => "foo"
     }, 
     "id" => "1"
-}```
+}
+```
 5. Delete a post
-       DELETE '/api/posts/:id'
+
+       `DELETE '/api/posts/:id'`
 
 ###Images###
 1. Add an image to a post
-       POST '/api/images'
-Example ```POST``` params/data:
-```
+
+       `POST '/api/images'`
+
+       Example `POST` params/data:
+       ```
 {
     "image" => {
         "url" => "http://i.imgur.com/nruy8eg.jpg", "post" => {"id" => 1}
     }
-}```
+}
+```
 2. Delete an image from a post
-       DELETE '/api/images/:id'
+
+       `DELETE '/api/images/:id'`
 
 ###Comments###
 **Note:** Comments may be nested in a hierarchical tree structure within a post
+
 1. List all the comments for a post
-       GET '/api/comments?post_id=:id'
-Example response: 
-```
+
+       `GET '/api/comments?post_id=:id'`
+
+       Example response: 
+       ```
 {
     "comments": [{
         "id": 4,
@@ -130,11 +151,15 @@ Example response:
             }]
         }]
     }]
-}```
-2. Create a new comment for a post (either a "root" comment or nested within an existing comment thread)
-       POST '/api/comments'
-Example ```POST``` params/data: 
+}
 ```
+
+2. Create a new comment for a post (either a "root" comment or nested within an existing comment thread)
+
+       `POST '/api/comments'`
+
+       Example `POST` params/data: 
+       ```
 {
     "comment" => {
         "content" => "Nulla tempor est ex, vitae tempus justo facilisis tincidunt. Mauris.",
@@ -145,14 +170,17 @@ Example ```POST``` params/data:
             "id" => 1
         }
     }
-}```
+}
+```
+
 3. Delete an existing comment (and any/all comments nested beneath it)
-       DELETE '/api/comments/:id'
+
+       `DELETE '/api/comments/:id'`
 
 ##Next steps##
 The following is a list of "next steps" that I would work on, given the time (prioritized with highest at the top):
-1. Implement some reporting functionality that could aggregate data across dimensions such as: individual user activity (i.e. show me all the posts and comments for a given user) or regional activity (i.e. show me all the posts and/or comments made by any user in a given city).
-2. Implement a UI to make use of the functionality provided by the API, so that normal users can actually use the thing :)
-3. Add some user-friendly widgets for text editing/image uploading (e.g. currently an "image" in the system is nothing more than a url to an image elsewhere on the web, which is obviously not very robust). Instead, I'd be interested in trying something like the *ckeditor* library, as I've heard good things (https://github.com/galetahub/ckeditor)
-4. Write more tests! The current test suite was intended as a light covering of the basic functionality, but by no means offers full or complete test coverage. You can **always** write more tests!
-5. If this were to become a scalable, production-quality application, I'd of course have to address issues of concurrency, load balancing, redundancy, etc. 
+ 1. Implement some reporting functionality that could aggregate data across dimensions such as: individual user activity (i.e. show me all the posts and comments for a given user) or regional activity (i.e. show me all the posts and/or comments made by any user in a given city).
+ 2. Implement a UI to make use of the functionality provided by the API, so that normal users can actually use the thing :)
+ 3. Add some user-friendly widgets for text editing/image uploading (e.g. currently an "image" in the system is nothing more than a url to an image elsewhere on the web, which is obviously not very robust). Instead, I'd be interested in trying something like the *ckeditor* library, as I've heard good things (https://github.com/galetahub/ckeditor)
+ 4. Write more tests! The current test suite was intended as a light covering of the basic functionality, but by no means offers full or complete test coverage. You can **always** write more tests!
+ 5. If this were to become a scalable, production-quality application, I'd of course have to address issues of concurrency, load balancing, redundancy, etc. 
