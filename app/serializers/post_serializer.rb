@@ -10,6 +10,6 @@ class PostSerializer < ActiveModel::Serializer
   end
 
   def images
-    object.images.to_a.map{ |i| i.url }
+    object.images.to_a.map{ |i| {url: i.url} }
   end
 end

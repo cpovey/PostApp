@@ -2,7 +2,7 @@ class Api::PostsController < ApplicationController
   respond_to :json
 
   def index
-    render json: Post.order(updated_at: :desc)
+    render json: Post.where("updated_at >= ?", 1.month.ago).order(updated_at: :desc)
   end
 
   def create

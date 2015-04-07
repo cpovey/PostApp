@@ -2,27 +2,57 @@ require 'rails_helper'
 
 RSpec.describe Api::PostsController, type: :controller do
   describe "GET #index" do
-    before(:each) do
+    context "for base case (2 simple posts)" do
+      before(:each) do
+        FactoryGirl.create(:post, updated_at: 1.week.ago)
+        FactoryGirl.create(:another_post, updated_at: 1.day.ago)
+        get :index, format: :json
+        @posts = JSON.parse(response.body, symbolize_names: true)[:posts]
+      end
+
+      it "returns correct number of posts" do
+        expect(@posts.count).to eql 2
+      end
+
+      it "returns posts in descending order (newest first)" do
+        expect(@posts.first[:updated_at]).to be > @posts.last[:updated_at]
+      end
+
+      it "returns correct post data" do
+        expect(@posts.first.keys).to match_array([:id, :title, :author_name, :author_city, :images, :updated_at])
+      end
+
+      it "returns success status" do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    it "returns recent posts only" do
+      FactoryGirl.create(:post, updated_at: 1.day.ago)
+      FactoryGirl.create(:post, updated_at: 3.days.ago)
+      FactoryGirl.create(:post, updated_at: 5.days.ago)
       FactoryGirl.create(:post, updated_at: 1.week.ago)
-      FactoryGirl.create(:another_post, updated_at: 1.day.ago)
+      FactoryGirl.create(:post, updated_at: 3.weeks.ago)
+      FactoryGirl.create(:post, updated_at: 6.weeks.ago)
       get :index, format: :json
-      @posts = JSON.parse(response.body, symbolize_names: true)[:posts]
+      posts = JSON.parse(response.body, symbolize_names: true)[:posts]
+
+      expect(Post.count).to eq 6
+      expect(posts.count).to eq 5 # oldest post is more than a month old, ignore it
     end
 
-    it "returns correct number of posts" do
-      expect(@posts.count).to eql 2
-    end
+    it "includes images in returned data" do
+      p = FactoryGirl.create(:post)
+      p2 = FactoryGirl.create(:post)
+      2.times { FactoryGirl.create(:image, post: p) }
+      FactoryGirl.create(:image, post: p2)
+      get :index, format: :json
+      posts = JSON.parse(response.body, symbolize_names: true)[:posts]
 
-    it "returns posts in descending order (newest first)" do
-      expect(@posts.first[:updated_at]).to be > @posts.last[:updated_at]
-    end
-
-    it "returns correct post data" do
-      expect(@posts.first.keys).to match_array([:id, :title, :author_name, :author_city, :images, :updated_at])
-    end
-
-    it "returns success status" do
-      expect(response).to have_http_status(200)
+      # expect the correct number of images
+      expect(posts.map {|p| p[:images].count}).to match_array([1,2])
+      # expect each images to be a hash containing a url (could extend this easily to store/retrieve more info)
+      posts.each {|p| p[:images].each {|i| expect(i.keys).to match_array([:url])}}
     end
   end
 
